@@ -11,7 +11,7 @@ module Api
       private
 
       def create_params
-        params.permit(:name, :description, :due_at)
+        params.require(:task).permit(:name, :description, :due_at)
       end
     end
   end

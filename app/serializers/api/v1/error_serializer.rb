@@ -10,12 +10,16 @@ module Api
       def serializable_hash
         {
           error: {
-            type: @error[:type],
-            message: @error[:message],
-            details: @error[:exception].record.errors.full_messages
+            type: error[:type],
+            message: error[:message],
+            details: error[:exception].record.errors.full_messages
           }
         }
       end
+
+      private 
+
+      attr_reader :error
     end
   end
 end

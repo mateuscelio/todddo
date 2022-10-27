@@ -7,7 +7,7 @@ RSpec.describe 'Tasks', type: :request do
     subject { post '/api/v1/tasks', params: }
 
     context 'when params are valid' do
-      let(:params) { { name: 'Task 1' } }
+      let(:params) { { task: { name: 'Task 1' } } }
 
       it 'is successful' do
         subject
@@ -26,7 +26,7 @@ RSpec.describe 'Tasks', type: :request do
     end
 
     context 'when params are invalid' do
-      let(:params) { { name: '', description: 'd' * 2501, due_at: 1.day.ago.to_date.to_s } }
+      let(:params) { { task: { name: '', description: 'd' * 2501, due_at: 1.day.ago.to_date.to_s } } }
 
       it 'is not successful' do
         subject
@@ -50,7 +50,7 @@ RSpec.describe 'Tasks', type: :request do
       end
 
       context 'when name is too long' do
-        let(:params) { { name: 'n' * 251 } }
+        let(:params) { { task: { name: 'n' * 251 } } }
 
         it 'returns validation messages' do
           subject
