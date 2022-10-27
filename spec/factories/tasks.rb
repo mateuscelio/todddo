@@ -2,8 +2,8 @@
 
 FactoryBot.define do
   factory :task do
-    name { 'MyString' }
-    description { 'MyString' }
-    due_at { '2022-09-29 12:54:59 UTC' }
+    name { Faker::Name.unique.name }
+    description { Faker::Name.unique.name }
+    due_at { Time.zone.now }
   end
 end

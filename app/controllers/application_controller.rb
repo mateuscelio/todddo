@@ -3,6 +3,8 @@
 class ApplicationController < ActionController::API
   rescue_from ActiveRecord::RecordInvalid, with: :record_invalid
 
+  private
+
   def record_invalid(exception)
     render json: {
       error: {
