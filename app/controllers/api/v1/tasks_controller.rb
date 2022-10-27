@@ -2,7 +2,7 @@
 
 module Api
   module V1
-    class TasksController < ApplicationController
+    class TasksController < ApiController
       def create
         created_task = Task.create!(create_params)
         render json: { id: created_task.id }
