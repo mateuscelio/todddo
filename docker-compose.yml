@@ -1,0 +1,14 @@
+version: '3'
+services:
+  todddo:
+    container_name: todddo
+    image: ruby:3.1.2
+    working_dir: /app
+    environment:
+      - BUNDLE_PATH=/app/bundle
+    volumes:
+      - .:/app
+    ports:
+      - 3000:3000
+    command: /app/scripts/start.sh
+

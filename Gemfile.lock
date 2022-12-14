@@ -82,6 +82,8 @@ GEM
     factory_bot_rails (6.2.0)
       factory_bot (~> 6.2.0)
       railties (>= 5.0.0)
+    faker (2.23.0)
+      i18n (>= 1.8.11, < 2)
     globalid (1.0.0)
       activesupport (>= 5.0)
     i18n (1.12.0)
@@ -90,6 +92,8 @@ GEM
     irb (1.4.1)
       reline (>= 0.3.0)
     json (2.6.2)
+    jsonapi-serializer (2.2.0)
+      activesupport (>= 4.2)
     loofah (2.19.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
@@ -186,6 +190,8 @@ GEM
       rack (>= 1.1)
       rubocop (>= 1.33.0, < 2.0)
     ruby-progressbar (1.11.0)
+    shoulda-matchers (5.2.0)
+      activesupport (>= 5.2.0)
     sqlite3 (1.5.0-x86_64-linux)
     thor (1.2.1)
     timeout (0.3.0)
@@ -204,11 +210,14 @@ DEPENDENCIES
   bootsnap
   debug
   factory_bot_rails (~> 6.2)
+  faker (~> 2.23)
+  jsonapi-serializer (~> 2.2)
   puma (~> 5.0)
   rails (~> 7.0.3, >= 7.0.3.1)
   rspec-rails (~> 5.1)
   rubocop (~> 1.36)
   rubocop-rails (~> 2.16)
+  shoulda-matchers (~> 5.2)
   sqlite3 (~> 1.4)
   tzinfo-data
 
