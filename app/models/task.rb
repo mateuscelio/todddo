@@ -4,6 +4,7 @@ class Task < ApplicationRecord
   validates :name, presence: true, length: { maximum: 250 }
   validates :description, length: { maximum: 2500 }
   validate :due_at_cannot_be_in_the_past
+  validates :completed, inclusion: { in: [true, false] }
 
   private
 
