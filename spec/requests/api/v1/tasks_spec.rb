@@ -68,4 +68,25 @@ RSpec.describe 'Tasks', type: :request do
       end
     end
   end
+
+  describe 'PUT /api/v1/tasks/:id' do
+    let(:task) { create(:task) }
+
+    context 'when params are valid' do
+      let(:params) { { task: { name: 'new name', description: 'new description', due_at: 3.days.from_now } } }
+
+      it 'update task' do
+        expect { put api_v1_task_path(task.id), params: }.to(change { task.reload.name }.to('new name')
+          .and(change { task.reload.description }.to('new description')
+          .and(change { task.reload.due_at })))
+      end
+
+      it 'returns updated task id' do
+        put(api_v1_task_path(task.id), params:)
+
+        body = JSON.parse(response.body, symbolize_names: true)
+        expect(body).to eq({ id: task.id })
+      end
+    end
+  end
 end
