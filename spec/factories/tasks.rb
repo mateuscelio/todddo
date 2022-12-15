@@ -5,5 +5,6 @@ FactoryBot.define do
     name { Faker::Name.unique.name }
     description { Faker::Name.unique.name }
     due_at { 1.day.from_now }
+    completed { false }
   end
 end
