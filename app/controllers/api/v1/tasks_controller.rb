@@ -13,6 +13,20 @@ module Api
         render json: { id: task.id }
       end
 
+      def mark_as_completed
+        task.completed!
+        task.save!
+
+        render status: :no_content
+      end
+
+      def mark_as_pending
+        task.pending!
+        task.save!
+
+        render status: :no_content
+      end
+
       private
 
       def task_params

@@ -6,6 +6,14 @@ class Task < ApplicationRecord
   validate :due_at_cannot_be_in_the_past
   validates :completed, inclusion: { in: [true, false] }
 
+  def completed!
+    self.completed = true
+  end
+
+  def pending!
+    self.completed = false
+  end
+
   private
 
   def due_at_cannot_be_in_the_past

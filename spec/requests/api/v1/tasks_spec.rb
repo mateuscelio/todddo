@@ -76,9 +76,10 @@ RSpec.describe 'Tasks', type: :request do
       let(:params) { { task: { name: 'new name', description: 'new description', due_at: 3.days.from_now } } }
 
       it 'update task' do
-        expect { put api_v1_task_path(task.id), params: }.to(change { task.reload.name }.to('new name')
-          .and(change { task.reload.description }.to('new description')
-          .and(change { task.reload.due_at })))
+        expect { put(api_v1_task_path(task.id), params:) }
+          .to(change { task.reload.name }.to('new name')
+          .and(change { task.reload.description }.to('new description'))
+          .and(change { task.reload.due_at }))
       end
 
       it 'returns updated task id' do
@@ -87,6 +88,38 @@ RSpec.describe 'Tasks', type: :request do
         body = JSON.parse(response.body, symbolize_names: true)
         expect(body).to eq({ id: task.id })
       end
+    end
+  end
+
+  describe 'POST /api/v1/tasks/:id/mark_as_completed' do
+    let(:task) { create(:task) }
+
+    it 'changes completed to true' do
+      expect { post mark_as_completed_api_v1_task_path(task.id) }.to change {
+                                                                       task.reload.completed
+                                                                     }.from(false).to(true)
+    end
+
+    it 'returns no content' do
+      post mark_as_pending_api_v1_task_path(task.id)
+
+      expect(response).to have_http_status :no_content
+    end
+  end
+
+  describe 'POST /api/v1/tasks/:id/mark_as_pending' do
+    let(:task) { create(:task, completed: true) }
+
+    it 'changes completed to false' do
+      expect { post mark_as_pending_api_v1_task_path(task.id) }.to change {
+                                                                     task.reload.completed
+                                                                   }.from(true).to(false)
+    end
+
+    it 'returns no content' do
+      post mark_as_pending_api_v1_task_path(task.id)
+
+      expect(response).to have_http_status :no_content
     end
   end
 end
