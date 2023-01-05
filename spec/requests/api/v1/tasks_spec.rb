@@ -74,6 +74,7 @@ RSpec.describe 'Tasks', type: :request do
 
     context 'when params are valid' do
       let(:params) { { task: { name: 'new name', description: 'new description', due_at: 3.days.from_now } } }
+      let(:mailer) { double(deliver_later: nil) }
 
       it 'update task' do
         expect { put(api_v1_task_path(task.id), params:) }
@@ -87,6 +88,14 @@ RSpec.describe 'Tasks', type: :request do
 
         body = JSON.parse(response.body, symbolize_names: true)
         expect(body).to eq({ id: task.id })
+      end
+
+      it 'sends email' do
+        allow(TaskMailer).to receive(:task_updated).with(task.id, ['dev@mail.com']).and_return(mailer)
+
+        put(api_v1_task_path(task.id), params:)
+
+        expect(mailer).to have_received(:deliver_later)
       end
     end
   end
