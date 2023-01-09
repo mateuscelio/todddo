@@ -10,6 +10,8 @@ module Api
 
       def update
         task.update!(task_params)
+        TaskMailer.task_updated(task.id, ['dev@mail.com']).deliver_later
+
         render json: { id: task.id }
       end
 
