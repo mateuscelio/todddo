@@ -4,27 +4,38 @@ module Api
   module V1
     class TasksController < ApiController
       def create
-        created_task = Task.create!(task_params)
+        created_task = Task::UseCases::CreateTask.new(
+          **task_params,
+          task_repository: Task::Infrastructure::ActiveRecordTaskRepository
+        ).call
+
         render json: { id: created_task.id }
       end
 
       def update
-        task.update!(task_params)
-        TaskMailer.task_updated(task.id, ['dev@mail.com']).deliver_later
+        updated_task = Task::UseCases::UpdateTask.new(
+          id: params[:id],
+          attributes: task_params,
+          task_repository: Task::Infrastructure::ActiveRecordTaskRepository
+        ).call
 
-        render json: { id: task.id }
+        render json: { id: updated_task.id }
       end
 
       def mark_as_completed
-        task.completed!
-        task.save!
+        Task::UseCases::MarkTaskAsCompleted.new(
+          id: params[:id],
+          task_repository: Task::Infrastructure::ActiveRecordTaskRepository
+        ).call
 
         render status: :no_content
       end
 
       def mark_as_pending
-        task.pending!
-        task.save!
+        Task::UseCases::MarkTaskAsPending.new(
+          id: params[:id],
+          task_repository: Task::Infrastructure::ActiveRecordTaskRepository
+        ).call
 
         render status: :no_content
       end
@@ -32,11 +43,7 @@ module Api
       private
 
       def task_params
-        params.require(:task).permit(:name, :description, :due_at)
-      end
-
-      def task
-        @task ||= Task.find(params[:id])
+        params.require(:task).permit(:name, :description, :due_at).to_h.symbolize_keys
       end
     end
   end

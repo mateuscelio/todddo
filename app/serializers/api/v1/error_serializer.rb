@@ -12,12 +12,12 @@ module Api
           error: {
             type: error[:type],
             message: error[:message],
-            details: error[:exception].record.errors.full_messages
+            details: error[:exception].errors
           }
         }
       end
 
-      private 
+      private
 
       attr_reader :error
     end

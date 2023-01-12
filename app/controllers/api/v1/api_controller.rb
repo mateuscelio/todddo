@@ -3,7 +3,7 @@
 module Api
   module V1
     class ApiController < ApplicationController
-      rescue_from ActiveRecord::RecordInvalid, with: :record_invalid
+      rescue_from Errors::InvalidEntity, with: :record_invalid
 
       private
 
