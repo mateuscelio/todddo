@@ -8,7 +8,6 @@ Rails.application.routes.draw do
           post 'mark_as_completed', on: :member
           post 'mark_as_pending', on: :member
         end
-
         resources :users, only: %i[create]
       end
     end
