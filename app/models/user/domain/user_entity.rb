@@ -3,21 +3,22 @@
 module User
   module Domain
     class UserEntity < Entity
-      attr_accessor :id, :email, :name, :created_at, :updated_at
+      attr_accessor :id, :email, :name, :created_at, :updated_at, :password
 
-      def self.create(id:, email:, name:)
+      def self.create(id:, email:, name:, password:)
         created_at = Time.current
         updated_at = created_at
 
-        new(id:, email:, name:, created_at:, updated_at:)
+        new(id:, email:, name:, password:, created_at:, updated_at:)
       end
 
-      def initialize(id:, email:, name:, created_at:, updated_at:)
+      def initialize(id:, email:, name:, created_at:, updated_at:, password: nil)
         @id = id
         @email = email
         @name = name
         @created_at = created_at
         @updated_at = updated_at
+        @password = password
       end
 
       def self.update(user, **attributes)

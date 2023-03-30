@@ -4,7 +4,17 @@ module User
   module Infrastructure
     class ActiveRecordUserRepository < Domain::UserRepository
       def self.store(user)
-        ActiveRecordModels::User.upsert(user.to_h)
+        user_hash = user.to_h
+
+        # Avoid unintentionally password update to nil
+        user_hash = user_hash.slice!(:password) if user_hash[:password].nil?
+
+        # This is required because for devise hooks work properly. Ex: hash the password
+        if ActiveRecordModels::User.find_by(id: user_hash[:id]).nil?
+          ActiveRecordModels::User.create!(user_hash)
+        else
+          ActiveRecordModels::User.update!(user_hash)
+        end
       end
 
       def self.find(user_id)
@@ -26,8 +36,8 @@ module User
 
       def self.last
         user = ActiveRecordModels::User.last
-
-        Domain::UserEntity.new(**user.attributes.symbolize_keys)
+        Domain::UserEntity.new(id: user.id, email: user.email, name: user.name, created_at: user.created_at,
+                               updated_at: user.updated_at)
       end
     end
   end

@@ -6,7 +6,7 @@ RSpec.describe User::Infrastructure::ActiveRecordUserRepository, type: :class do
   describe '.store' do
     context 'with a user that does not exist yet' do
       it 'creates a new entry' do
-        user = User::Domain::UserEntity.create(id: 3, name: 'User', email: 'random@email.com')
+        user = User::Domain::UserEntity.create(id: 3, name: 'User', email: 'random@email.com', password: '12341234')
 
         expect { described_class.store(user) }.to change(described_class, :count).from(0).to(1)
       end
@@ -15,7 +15,8 @@ RSpec.describe User::Infrastructure::ActiveRecordUserRepository, type: :class do
     context 'with a user that already exist' do
       let(:user_ar) { create(:user, name: 'Username') }
       let!(:user) do
-        User::Domain::UserEntity.create(id: user_ar.id, name: "#{user_ar.name}1", email: 'email2@mail.com')
+        User::Domain::UserEntity.create(id: user_ar.id, name: "#{user_ar.name}1", email: 'email2@mail.com',
+                                        password: '123412341234')
       end
 
       it 'does not create new entry' do
