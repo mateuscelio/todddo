@@ -1,18 +1,20 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  namespace :api do
-    namespace :v1 do
-      resources :tasks, only: %i[create update] do
-        post 'mark_as_completed', on: :member
-        post 'mark_as_pending', on: :member
+  defaults format: :json do
+    namespace :api do
+      namespace :v1 do
+        resources :tasks, only: %i[create update] do
+          post 'mark_as_completed', on: :member
+          post 'mark_as_pending', on: :member
+        end
       end
+    end
 
-      devise_for :users, class_name: 'User::Infrastructure::ActiveRecordModels::User'
+    devise_for :users, class_name: 'User::Infrastructure::ActiveRecordModels::User', skip: :all
+
+    devise_scope :user do
+      post '/api/v1/auth/sign_in', to: 'api/v1/auth#create'
     end
   end
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-
-  # Defines the root path route ("/")
-  # root "articles#index"
 end
