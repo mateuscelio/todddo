@@ -3,6 +3,8 @@
 module Api
   module V1
     class TasksController < ApiController
+      before_action :authenticate_user!
+
       def create
         created_task = Task::UseCases::CreateTask.new(
           **task_params,

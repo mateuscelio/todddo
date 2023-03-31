@@ -6,12 +6,11 @@ module Auth
       class InvalidTokenError < StandardError; end
       SECRET_KEY = Rails.application.secrets.secret_key_base
 
-      def initialize(token:, user_repository:)
-        @token = token
+      def initialize(user_repository:)
         @user_repository = user_repository
       end
 
-      def call
+      def call(token:)
         decoded_token = JWT.decode(token, SECRET_KEY)
         user_id = decoded_token[0]['id']
         user_repository.find(user_id)
@@ -21,7 +20,7 @@ module Auth
 
       private
 
-      attr_reader :token, :user_repository
+      attr_reader :user_repository
     end
   end
 end

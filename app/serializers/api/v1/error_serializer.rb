@@ -12,7 +12,7 @@ module Api
           error: {
             type: error[:type],
             message: error[:message],
-            details: error[:exception].errors
+            details: error[:details]
           }
         }
       end
