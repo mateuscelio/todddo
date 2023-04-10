@@ -2,7 +2,7 @@
 
 module Task
   module Domain
-    class TaskEntity
+    class TaskEntity < Entity
       NAME_MAXIMUM_LENGTH = 250
       DESCRIPTION_MAXIMUM_LENGTH = 2500
 
@@ -39,19 +39,6 @@ module Task
 
       def self.mark_as_pending(task)
         task.clone_with(completed: false)
-      end
-
-      def clone_with(**new_attrs)
-        updated_attrs = to_h.merge(new_attrs)
-        self.class.new(**updated_attrs)
-      end
-
-      def to_h
-        instance_variables.select do |variable|
-          variable != :@validation_errors
-        end.each_with_object({}) do |instance_name, obj|
-          obj[instance_name.to_s.gsub('@', '').to_sym] = instance_variable_get(instance_name)
-        end
       end
 
       private
