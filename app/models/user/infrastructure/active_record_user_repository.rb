@@ -20,8 +20,7 @@ module User
       def self.find(user_id)
         user = ActiveRecordModels::User.find(user_id)
 
-        Domain::UserEntity.new(id: user.id, email: user.email, name: user.name, created_at: user.created_at,
-                               updated_at: user.updated_at)
+        ActiveRecordUserMapper.to_entity(user:)
       end
 
       def self.count
@@ -36,8 +35,7 @@ module User
 
       def self.last
         user = ActiveRecordModels::User.last
-        Domain::UserEntity.new(id: user.id, email: user.email, name: user.name, created_at: user.created_at,
-                               updated_at: user.updated_at)
+        ActiveRecordUserMapper.to_entity(user:)
       end
     end
   end
