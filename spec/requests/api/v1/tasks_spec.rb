@@ -3,8 +3,13 @@
 require 'rails_helper'
 
 RSpec.describe 'Tasks', type: :request do
+  let(:user_ar) { create(:user) }
+  let(:user_repository) { User::Infrastructure::ActiveRecordUserRepository }
+  let(:token) { Auth::UseCases::CreateToken.new(user_repository:).call(user_id: user_ar.id) }
+  let(:headers) { { Authorization: "Bearer #{token}" } }
+
   describe 'POST /api/v1/tasks' do
-    subject { post '/api/v1/tasks', params: }
+    subject { post '/api/v1/tasks', params:, headers: }
 
     context 'when params are valid' do
       let(:params) { { task: { name: 'Task 1', due_at: 2.days.from_now.iso8601 } } }
@@ -15,13 +20,13 @@ RSpec.describe 'Tasks', type: :request do
       end
 
       it 'creates a new task' do
-        expect { subject }.to change(::Task::Infrastructure::ActiveRecordTaskRepository, :count).by(1)
+        expect { subject }.to change(Task::Infrastructure::ActiveRecordTaskRepository, :count).by(1)
       end
 
       it 'returns created task id' do
         subject
         body = JSON.parse(response.body, symbolize_names: true)
-        expect(body[:id]).to eq(::Task::Infrastructure::ActiveRecordTaskRepository.last.id)
+        expect(body[:id]).to eq(Task::Infrastructure::ActiveRecordTaskRepository.last.id)
       end
     end
 
@@ -68,19 +73,21 @@ RSpec.describe 'Tasks', type: :request do
   describe 'PUT /api/v1/tasks/:id' do
     let(:task) { create(:task) }
 
+    subject(:put_update_task) { put(api_v1_task_path(task.id), params:, headers:) }
+
     context 'when params are valid' do
       let(:params) { { task: { name: 'new name', description: 'new description', due_at: 3.days.from_now } } }
       let(:mailer) { double(deliver_later: nil) }
 
       it 'update task' do
-        expect { put(api_v1_task_path(task.id), params:) }
+        expect { put_update_task }
           .to(change { task.reload.name }.to('new name')
           .and(change { task.reload.description }.to('new description'))
           .and(change { task.reload.due_at }))
       end
 
       it 'returns updated task id' do
-        put(api_v1_task_path(task.id), params:)
+        put_update_task
 
         body = JSON.parse(response.body, symbolize_names: true)
         expect(body).to eq({ id: task.id })
@@ -89,7 +96,7 @@ RSpec.describe 'Tasks', type: :request do
       it 'sends email' do
         allow(TaskMailer).to receive(:task_updated).with(task.id, ['dev@mail.com']).and_return(mailer)
 
-        put(api_v1_task_path(task.id), params:)
+        put_update_task
 
         expect(mailer).to have_received(:deliver_later)
       end
@@ -99,14 +106,15 @@ RSpec.describe 'Tasks', type: :request do
   describe 'POST /api/v1/tasks/:id/mark_as_completed' do
     let(:task) { create(:task) }
 
+    subject(:post_mark_as_completed) { post mark_as_completed_api_v1_task_path(task.id), headers: }
     it 'changes completed to true' do
-      expect { post mark_as_completed_api_v1_task_path(task.id) }.to change {
-                                                                       task.reload.completed
-                                                                     }.from(false).to(true)
+      expect { post_mark_as_completed }.to change {
+                                             task.reload.completed
+                                           }.from(false).to(true)
     end
 
     it 'returns no content' do
-      post mark_as_pending_api_v1_task_path(task.id)
+      post_mark_as_completed
 
       expect(response).to have_http_status :no_content
     end
@@ -115,14 +123,16 @@ RSpec.describe 'Tasks', type: :request do
   describe 'POST /api/v1/tasks/:id/mark_as_pending' do
     let(:task) { create(:task, completed: true) }
 
+    subject(:post_mark_as_pending) { post mark_as_pending_api_v1_task_path(task.id), headers: }
+
     it 'changes completed to false' do
-      expect { post mark_as_pending_api_v1_task_path(task.id) }.to change {
-                                                                     task.reload.completed
-                                                                   }.from(true).to(false)
+      expect { post_mark_as_pending }.to change {
+                                           task.reload.completed
+                                         }.from(true).to(false)
     end
 
     it 'returns no content' do
-      post mark_as_pending_api_v1_task_path(task.id)
+      post_mark_as_pending
 
       expect(response).to have_http_status :no_content
     end
