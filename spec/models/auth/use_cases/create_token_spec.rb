@@ -7,7 +7,10 @@ RSpec.describe Auth::UseCases::CreateToken, type: :class do
 
   describe '.call' do
     let(:user_repository) { User::Infrastructure::ActiveRecordUserRepository }
-    let(:user) { User::UseCases::CreateUser.new(user_repository:).call(name: 'User', email: 'random@email.com') }
+    let(:user) do
+      User::UseCases::CreateUser.new(user_repository:).call(name: 'User', email: 'random@email.com',
+                                                            password: '12341234')
+    end
 
     subject(:service) { described_class.new(user_repository:) }
     it "creates the token with user's id and email" do

@@ -4,15 +4,13 @@ module User
   module UseCases
     class CreateUser
       def initialize(user_repository:)
-        @name = name
-        @email = email
         @user_repository = user_repository
       end
 
-      def call(email:, name:)
+      def call(email:, name:, password:)
         id = user_repository.next_id
 
-        user = Domain::UserEntity.create(id:, name:, email:)
+        user = Domain::UserEntity.create(id:, name:, email:, password:)
 
         user_repository.store(user)
 
@@ -21,7 +19,7 @@ module User
 
       private
 
-      attr_accessor :email, :name, :user_repository
+      attr_accessor :user_repository 
     end
   end
 end
