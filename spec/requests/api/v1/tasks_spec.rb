@@ -28,6 +28,10 @@ RSpec.describe 'Tasks', type: :request do
         body = JSON.parse(response.body, symbolize_names: true)
         expect(body[:id]).to eq(Task::Infrastructure::ActiveRecordTaskRepository.last.id)
       end
+
+      it 'associate task to the authenticated user' do
+        expect { subject }.to change { user_ar.reload.tasks.count }.by(1)
+      end
     end
 
     context 'when params are invalid' do

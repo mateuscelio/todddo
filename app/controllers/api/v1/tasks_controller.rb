@@ -45,7 +45,11 @@ module Api
       private
 
       def task_params
-        params.require(:task).permit(:name, :description, :due_at).to_h.symbolize_keys
+        params.require(:task)
+              .permit(:name, :description, :due_at)
+              .to_h
+              .symbolize_keys
+              .merge(user_id: @user.id)
       end
     end
   end

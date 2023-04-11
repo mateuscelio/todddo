@@ -3,10 +3,12 @@
 require 'rails_helper'
 
 RSpec.describe Task::Infrastructure::ActiveRecordTaskRepository, type: :class do
+  let(:user_id) { create(:user).id }
+
   describe '.store' do
     context 'with a task that does not exist yet' do
       it 'creates a new entry' do
-        task = Task::Domain::TaskEntity.create(id: 3, name: 'Task 1', due_at: 1.day.from_now)
+        task = Task::Domain::TaskEntity.create(id: 3, user_id:, name: 'Task 1', due_at: 1.day.from_now)
 
         expect { described_class.store(task) }.to change(described_class, :count).from(0).to(1)
       end
@@ -14,7 +16,10 @@ RSpec.describe Task::Infrastructure::ActiveRecordTaskRepository, type: :class do
 
     context 'with a task that already exist' do
       let(:task_ar) { create(:task) }
-      let!(:task) { Task::Domain::TaskEntity.create(id: task_ar.id, name: 'Task 1', due_at: 1.day.from_now) }
+      let!(:task) do
+        Task::Domain::TaskEntity.create(id: task_ar.id, user_id: task_ar.user_id, name: 'Task 1',
+                                        due_at: 1.day.from_now)
+      end
 
       it 'does not create new entry' do
         expect { described_class.store(task) }.to_not change(Task::Infrastructure::ActiveRecordTaskRepository, :count)

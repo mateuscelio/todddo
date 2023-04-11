@@ -6,16 +6,16 @@ module Task
       NAME_MAXIMUM_LENGTH = 250
       DESCRIPTION_MAXIMUM_LENGTH = 2500
 
-      attr_accessor :name, :description, :due_at, :completed, :created_at, :updated_at, :id
+      attr_accessor :name, :description, :due_at, :completed, :created_at, :updated_at, :id, :user_id
 
-      def self.create(id:, name:, due_at:, description: '')
+      def self.create(id:, name:, due_at:, user_id:, description: '')
         created_at = Time.current
         updated_at = created_at
 
-        new(id:, name:, due_at:, description:, created_at:, updated_at:)
+        new(id:, name:, due_at:, description:, created_at:, updated_at:, user_id:)
       end
 
-      def initialize(name:, due_at:, id:, created_at: nil, updated_at: nil, description: '', completed: false)
+      def initialize(name:, due_at:, id:, user_id:, created_at: nil, updated_at: nil, description: '', completed: false)
         @id = id
         @name = name
         @description = description
@@ -24,6 +24,7 @@ module Task
         @created_at = created_at
         @updated_at = updated_at
         @validation_errors = []
+        @user_id = user_id
 
         validate!
       end
