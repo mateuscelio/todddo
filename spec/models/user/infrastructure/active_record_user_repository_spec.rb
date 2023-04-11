@@ -20,7 +20,9 @@ RSpec.describe User::Infrastructure::ActiveRecordUserRepository, type: :class do
       end
 
       it 'does not create new entry' do
-        expect { described_class.store(user) }.to_not change(User::Infrastructure::ActiveRecordUserRepository, :count)
+        expect do
+          described_class.store(user)
+        end.to_not change(User::Infrastructure::ActiveRecordUserRepository, :count)
       end
 
       it 'updates the existing entry' do
@@ -28,14 +30,33 @@ RSpec.describe User::Infrastructure::ActiveRecordUserRepository, type: :class do
           .to(change { user_ar.reload.email }.to('email2@mail.com')
           .and(change { user_ar.reload.name }.to("#{user_ar.name}1")))
       end
+
+      context 'with task_ids' do
+        let!(:tasks_ar) { create_list(:task, 2) }
+        let!(:user) do
+          User::Domain::UserEntity.new(id: user_ar.id, name: "#{user_ar.name}1", email: 'email2@mail.com',
+                                       password: '123412341234', task_ids: tasks_ar.map(&:id),
+                                       updated_at: user_ar.updated_at, created_at: user_ar.created_at)
+        end
+
+        it 'ignores task_ids list and does not update task association' do
+          described_class.store(user)
+          expect(user_ar.reload.tasks.length).to eq(0)
+        end
+      end
     end
   end
 
   describe '.find' do
-    let(:user_id) { create(:user).id }
+    let(:user_ar) { create(:user) }
+    let!(:tasks_ar) { create_list(:task, 2, user: user_ar) }
 
     it 'returns an instance of user entity' do
-      expect(described_class.find(user_id)).to be_an_instance_of User::Domain::UserEntity
+      expect(described_class.find(user_ar.id)).to be_an_instance_of User::Domain::UserEntity
+    end
+
+    it 'returns entity instance with task_ids' do
+      expect(described_class.find(user_ar.id).task_ids).to match_array(tasks_ar.map(&:id))
     end
   end
 
