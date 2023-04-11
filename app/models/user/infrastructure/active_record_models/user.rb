@@ -8,6 +8,8 @@ module User
         # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
         devise :database_authenticatable, :registerable,
                :recoverable, :validatable
+
+        has_many :tasks, class_name: 'Task::Infrastructure::ActiveRecordModels::Task', dependent: :destroy
       end
     end
   end

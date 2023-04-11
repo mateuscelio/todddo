@@ -4,7 +4,7 @@ module User
   module UseCases
     class CreateUser
       def initialize(user_repository:)
-       @user_repository = user_repository
+        @user_repository = user_repository
       end
 
       def call(email:, name:, password:)
@@ -19,7 +19,7 @@ module User
 
       private
 
-      attr_accessor :user_repository 
+      attr_accessor :user_repository
     end
   end
 end

@@ -3,7 +3,9 @@
 module Task
   module Infrastructure
     module ActiveRecordModels
-      class Task < ApplicationRecord; end
+      class Task < ApplicationRecord
+        belongs_to :user, class_name: 'User::Infrastructure::ActiveRecordModels::User'
+      end
     end
   end
 end
