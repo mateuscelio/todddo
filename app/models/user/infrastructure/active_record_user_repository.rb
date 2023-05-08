@@ -8,12 +8,15 @@ module User
 
         # Avoid unintentionally password update to nil
         user_hash = user_hash.slice!(:password) if user_hash[:password].nil?
+        # Does not update relation with task through User
+        user_hash = user_hash.slice!(:task_ids)
 
         # This is required because for devise hooks work properly. Ex: hash the password
-        if ActiveRecordModels::User.find_by(id: user_hash[:id]).nil?
+        current_user = ActiveRecordModels::User.find_by(id: user_hash[:id])
+        if current_user.nil?
           ActiveRecordModels::User.create!(user_hash)
         else
-          ActiveRecordModels::User.update!(user_hash)
+          current_user.update!(user_hash)
         end
       end
 

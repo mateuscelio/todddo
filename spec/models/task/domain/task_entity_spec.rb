@@ -8,8 +8,9 @@ RSpec.describe Task::Domain::TaskEntity, type: :class do
   let(:due_at) { Time.now + 1.day }
   let(:completed) { false }
   let(:id) { 1 }
+  let(:user_id) { 1 }
 
-  subject { described_class.new(id:, name:, description:, due_at:, completed:) }
+  subject { described_class.new(id:, name:, description:, due_at:, completed:, user_id:) }
 
   describe '#new' do
     context 'without name' do
@@ -56,8 +57,9 @@ RSpec.describe Task::Domain::TaskEntity, type: :class do
   describe '#clone_with' do
     let(:description) { 'test desc' }
     let(:name) { 'test name' }
+    let(:user_id) { 1 }
 
-    subject { described_class.create(id:, name:, description:, due_at:) }
+    subject { described_class.create(id:, user_id:, name:, description:, due_at:) }
 
     it 'clones instance with specified valued' do
       cloned_task = subject.clone_with(id: nil, name: 'new_name', completed: true)
