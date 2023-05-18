@@ -18,7 +18,9 @@ module Api
         updated_task = Task::UseCases::UpdateTask.new(
           id: params[:id],
           attributes: task_params,
-          task_repository: Task::Infrastructure::ActiveRecordTaskRepository
+          task_repository: Task::Infrastructure::ActiveRecordTaskRepository,
+          updated_by: @user,
+          validate_ownership: Task::Domain::ValidateOwnership
         ).call
 
         render json: { id: updated_task.id }

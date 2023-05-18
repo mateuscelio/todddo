@@ -50,12 +50,12 @@ end
 group :development do
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
   # gem "spring"
+  gem 'rubocop', '~> 1.36'
   gem 'rubocop-rails', '~> 2.16'
-  gem "rubocop", "~> 1.36"
 end
 
-gem "jsonapi-serializer", "~> 2.2"
+gem 'jsonapi-serializer', '~> 2.2'
 
-gem "devise", "~> 4.8"
+gem 'devise', '~> 4.8'
 
-gem "jwt", "~> 2.7"
+gem 'jwt', '~> 2.7'

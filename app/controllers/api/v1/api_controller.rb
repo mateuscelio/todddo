@@ -5,6 +5,7 @@ module Api
     class ApiController < ApplicationController
       rescue_from Errors::InvalidEntity, with: :record_invalid
       rescue_from Auth::UseCases::VerifyToken::InvalidTokenError, with: :invalid_token
+      rescue_from Errors::Unauthorized, with: :unauthorized
 
       private
 
@@ -32,6 +33,15 @@ module Api
           details: exception.errors
         }
         render json: ErrorSerializer.new(error).serializable_hash, status: :unprocessable_entity
+      end
+
+      def unauthorized(exception)
+        error = {
+          type: 'Unauthorized',
+          message: exception.message
+        }
+
+        render json: ErrorSerializer.new(error).serializable_hash, status: :unauthorized
       end
     end
   end
