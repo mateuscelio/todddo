@@ -15,6 +15,10 @@ module User
         raise 'This should be implemented in concrete class'
       end
 
+      def self.find_by_email
+        raise 'This should be implemented in concrete class'
+      end
+
       def self.next_id
         raise 'This should be implemented in concrete class'
       end

@@ -11,4 +11,6 @@ module Errors
       @errors = errors
     end
   end
+
+  class ValidationError < StandardError; end
 end

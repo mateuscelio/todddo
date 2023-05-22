@@ -8,6 +8,8 @@ module User
       end
 
       def call(email:, name:, password:)
+        Domain::ValidateEmail.validate!(email:, user_repository:)
+
         id = user_repository.next_id
 
         user = Domain::UserEntity.create(id:, name:, email:, password:)
