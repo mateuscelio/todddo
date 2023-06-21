@@ -3,7 +3,7 @@
 module Api
   module V1
     class ApiController < ApplicationController
-      rescue_from Errors::InvalidEntity, with: :record_invalid
+      rescue_from Errors::InvalidEntity, Errors::ValidationError, with: :record_invalid
       rescue_from Auth::UseCases::VerifyToken::InvalidTokenError, with: :invalid_token
       rescue_from Errors::Unauthorized, with: :unauthorized
 
@@ -30,7 +30,7 @@ module Api
         error = {
           type: 'ValidationError',
           message: 'Validation error',
-          details: exception.errors
+          details: exception.try(:errors) || exception&.message
         }
         render json: ErrorSerializer.new(error).serializable_hash, status: :unprocessable_entity
       end

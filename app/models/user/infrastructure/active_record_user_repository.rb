@@ -26,6 +26,14 @@ module User
         ActiveRecordUserMapper.to_entity(user:)
       end
 
+      def self.find_by_email(user_email)
+        user = ActiveRecordModels::User.find_by(email: user_email)
+
+        return if user.nil?
+
+        ActiveRecordUserMapper.to_entity(user:)
+      end
+
       def self.count
         ActiveRecordModels::User.count
       end
