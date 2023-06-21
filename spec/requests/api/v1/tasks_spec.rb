@@ -75,7 +75,7 @@ RSpec.describe 'Tasks', type: :request do
   end
 
   describe 'PUT /api/v1/tasks/:id' do
-    let(:task) { create(:task) }
+    let(:task) { create(:task, user_id: user_ar.id) }
 
     subject(:put_update_task) { put(api_v1_task_path(task.id), params:, headers:) }
 
@@ -103,6 +103,18 @@ RSpec.describe 'Tasks', type: :request do
         put_update_task
 
         expect(mailer).to have_received(:deliver_later)
+      end
+
+      context "when an user is updating a task that doesn't own" do
+        let(:task) { create(:task) }
+
+        it 'returns error' do
+          put_update_task
+
+          body = JSON.parse(response.body, symbolize_names: true)
+          expect(body).to eq({ error: { details: nil, message: "User doesn't own this task",
+                                        type: 'Unauthorized' } })
+        end
       end
     end
   end

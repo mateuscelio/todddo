@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe Task::Domain::TaskEntity, type: :class do
   let(:name) { 'Name' }
   let(:description) { '' }
-  let(:due_at) { Time.now + 1.day }
+  let(:due_at) { 1.day.from_now }
   let(:completed) { false }
   let(:id) { 1 }
   let(:user_id) { 1 }
@@ -44,7 +44,7 @@ RSpec.describe Task::Domain::TaskEntity, type: :class do
     end
 
     context 'with due_at in the past' do
-      let(:due_at) { Time.now - 1.day }
+      let(:due_at) { 1.day.ago }
 
       it 'raises validation error' do
         subject

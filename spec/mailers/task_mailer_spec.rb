@@ -18,9 +18,9 @@ RSpec.describe TaskMailer, type: :mailer do
     end
 
     it 'renders task details in the body' do
-      expect(mail.body.encoded).to match "#{task.name}"
-      expect(mail.body.encoded).to match "#{task.description}"
-      expect(mail.body.encoded).to match "#{task.due_at}"
+      expect(mail.body.encoded).to match task.name.to_s
+      expect(mail.body.encoded).to match task.description.to_s
+      expect(mail.body.encoded).to match task.due_at.to_s
     end
   end
 end
