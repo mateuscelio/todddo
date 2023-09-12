@@ -20,7 +20,8 @@ module Api
           attributes: task_params,
           task_repository: Task::Infrastructure::ActiveRecordTaskRepository,
           updated_by: @user,
-          validate_ownership: Task::Domain::ValidateOwnership
+          validate_ownership: Task::Domain::ValidateOwnership,
+          pub_sub: PubSub
         ).call
 
         render json: { id: updated_task.id }
