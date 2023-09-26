@@ -81,7 +81,8 @@ RSpec.describe 'Tasks', type: :request do
 
     context 'when params are valid' do
       let(:params) { { task: { name: 'new name', description: 'new description', due_at: 3.days.from_now } } }
-      let(:mailer) { double(deliver_later: nil) }
+      let(:pub_sub) { PubSub }
+      let(:updated_event) { double(call: true) }
 
       it 'update task' do
         expect { put_update_task }
@@ -97,12 +98,13 @@ RSpec.describe 'Tasks', type: :request do
         expect(body).to eq({ id: task.id })
       end
 
-      it 'sends email' do
-        allow(TaskMailer).to receive(:task_updated).with(task.id, ['dev@mail.com']).and_return(mailer)
+      it 'sends task updated event' do
+        allow(Task::UseCases::CreateTaskUpdatedEvent).to receive(:new).with(task_id: task.id,
+                                                                            pub_sub:).and_return(updated_event)
 
         put_update_task
 
-        expect(mailer).to have_received(:deliver_later)
+        expect(updated_event).to have_received(:call)
       end
 
       context "when an user is updating a task that doesn't own" do
