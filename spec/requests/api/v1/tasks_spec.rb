@@ -81,7 +81,7 @@ RSpec.describe 'Tasks', type: :request do
 
     context 'when params are valid' do
       let(:params) { { task: { name: 'new name', description: 'new description', due_at: 3.days.from_now } } }
-      let(:pub_sub) { PubSub }
+      let(:pub_sub) { PubSubRabbitMq.instance }
       let(:updated_event) { double(call: true) }
 
       it 'update task' do

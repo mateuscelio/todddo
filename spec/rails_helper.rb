@@ -66,6 +66,20 @@ RSpec.configure do |config|
   # config.filter_gems_from_backtrace("gem name")
   config.include FactoryBot::Syntax::Methods
   config.include RequestHelpers, type: :request
+
+  config.before do
+    allow(Bunny).to receive(:new).and_return(BunnyMock.new)
+    connection = Bunny.new(hostname: 'localhost')
+    connection.start
+    connection
+      .channel
+      .queue('in_app_communication', durable: true)
+      .subscribe(manual_ack: false) do |_, _, payload|
+      parsed_message = JSON.parse(payload, symbolize_names: true)
+
+      PubSubRabbitMq.instance.call_handler(**parsed_message)
+    end
+  end
 end
 
 Shoulda::Matchers.configure do |config|

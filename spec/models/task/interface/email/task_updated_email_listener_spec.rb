@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Task::Interface::Email::TaskUpdatedEmailListener, type: :class do
-  let(:pub_sub) { PubSub }
+  let(:pub_sub) { PubSubRabbitMq.instance }
 
   subject { described_class.new(pub_sub:) }
 

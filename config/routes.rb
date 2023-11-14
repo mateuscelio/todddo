@@ -4,7 +4,7 @@ Rails.application.routes.draw do
   defaults format: :json do
     namespace :api do
       namespace :v1 do
-        resources :tasks, only: %i[create update] do
+        resources :tasks, only: %i[index create update] do
           post 'mark_as_completed', on: :member
           post 'mark_as_pending', on: :member
         end
