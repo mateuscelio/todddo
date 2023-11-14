@@ -21,7 +21,7 @@ module Api
           task_repository: Task::Infrastructure::ActiveRecordTaskRepository,
           updated_by: @user,
           validate_ownership: Task::Domain::ValidateOwnership,
-          pub_sub: PubSub
+          pub_sub: PubSubRabbitMq.instance
         ).call
 
         render json: { id: updated_task.id }
